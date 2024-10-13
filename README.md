@@ -37,7 +37,7 @@ Este é o backend do sistema de prontuário para o Instituto Paliativo, desenvol
 - **Evolução do Paciente**: Registro cronológico das fichas por especialidade e atendimento.
 - **Ficha Geral Consolidada**: Resumo atualizado com as informações mais recentes de todas as áreas.
 
-### 6. **Protocolo de Atendimento**
+### 6. **Ficha de pré-atendimento**
 
 - **Registro de Sintomas**: Acompanhamento de sintomas como dor, náusea, fadiga, apetite, evacuações, oxigenação, entre outros.
 - **Escalas Numéricas**: Utilização de escalas de 0 a 10 para avaliar a intensidade de sintomas, como dor.
