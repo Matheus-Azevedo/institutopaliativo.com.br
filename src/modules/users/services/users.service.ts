@@ -1,4 +1,10 @@
-import { Injectable, Inject } from '@nestjs/common';
+import {
+  Injectable,
+  Inject,
+  NotFoundException,
+  ConflictException,
+  UnprocessableEntityException,
+} from '@nestjs/common';
 import { User } from '../entities/user.entity'; // Seu modelo de usuário
 import { CreateUserDto } from '../dto/create-user.dto';
 import { UpdateUserDto } from '../dto/update-user.dto';
@@ -19,15 +25,43 @@ export class UsersService {
       ...userData,
       senha: hashedPassword,
     };
-    return await this.userRepository.create(newUSerData);
+    const user = await this.userRepository.findOne({
+      where: { email: newUSerData.email },
+    });
+    if (user) {
+      throw new ConflictException('Usuário já cadastrado');
+    }
+    const newUser = await this.userRepository.create(newUSerData);
+    if (!newUser) {
+      throw new UnprocessableEntityException('Erro ao criar usuário');
+    }
+    return newUser;
   }
 
   async findAll(): Promise<GetUserDto[]> {
-    return await this.userRepository.findAll<User>();
+    const allUsers = await this.userRepository.findAll();
+    if (!allUsers) {
+      throw new UnprocessableEntityException('Erro ao buscar usuários');
+    }
+    return allUsers;
+  }
+
+  async findByEmail(email: string): Promise<GetUserDto | null> {
+    const user = await this.userRepository.findOne({
+      where: { email },
+    });
+    if (!user) {
+      throw new NotFoundException('Usuário não encontrado');
+    }
+    return user;
   }
 
   async findByPk(id: string): Promise<GetUserDto | null> {
-    return await this.userRepository.findByPk(id);
+    const user = await this.userRepository.findByPk(id);
+    if (!user) {
+      throw new NotFoundException('Usuário não encontrado');
+    }
+    return user;
   }
 
   async update(
@@ -35,17 +69,24 @@ export class UsersService {
     updateData: UpdateUserDto,
   ): Promise<GetUserDto | null> {
     const user = await this.userRepository.findByPk(id);
-    if (user) {
-      await user.update(updateData);
-      return user;
+    if (!user) {
+      throw new NotFoundException('Usuário não encontrado');
     }
-    return null;
+    const userUpdated = await user.update(updateData);
+    if (!userUpdated) {
+      throw new UnprocessableEntityException('Erro ao atualizar usuário');
+    }
+    return userUpdated;
   }
 
   async destroy(id: string): Promise<void> {
     const user = await this.findByPk(id);
-    if (user) {
-      await this.userRepository.destroy({ where: { id } });
+    if (!user) {
+      throw new NotFoundException('Usuário não encontrado');
+    }
+    const userRemoved = await this.userRepository.destroy({ where: { id } });
+    if (!userRemoved) {
+      throw new UnprocessableEntityException('Erro ao excluir usuário');
     }
   }
 }
