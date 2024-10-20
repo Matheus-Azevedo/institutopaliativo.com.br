@@ -43,7 +43,16 @@ export class UsersService {
     if (!allUsers) {
       throw new UnprocessableEntityException('Erro ao buscar usuários');
     }
-    return allUsers;
+    const allUsersWithoutPassword = allUsers.map((user) => {
+      const userWithoutPassword = {
+        id: user.id,
+        nome: user.nome,
+        email: user.email,
+        role: user.role,
+      };
+      return userWithoutPassword;
+    });
+    return allUsersWithoutPassword;
   }
 
   async findByEmail(email: string): Promise<GetUserDto | null> {
