@@ -1,5 +1,12 @@
-import { IsNotEmpty, IsEmail, IsString } from 'class-validator';
+import {
+  IsNotEmpty,
+  IsEmail,
+  IsString,
+  IsEnum,
+  IsOptional,
+} from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
+import { HeathProfessionalRole, UserRole } from '../enums/users.enum';
 
 export class CreateUserDto {
   @ApiProperty({
@@ -30,11 +37,20 @@ export class CreateUserDto {
   readonly senha: string;
 
   @ApiProperty({
-    type: String,
+    enum: UserRole,
     description: 'Role do usuário',
     required: true,
   })
   @IsNotEmpty()
-  @IsString()
-  readonly role: string;
+  @IsEnum(UserRole)
+  readonly role: UserRole;
+
+  @ApiProperty({
+    enum: HeathProfessionalRole,
+    description: 'Role do profissional de saúde',
+    required: false,
+  })
+  @IsOptional()
+  @IsEnum(HeathProfessionalRole)
+  readonly healthProfessionalRole?: HeathProfessionalRole;
 }
