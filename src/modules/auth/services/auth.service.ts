@@ -17,7 +17,11 @@ export class AuthService {
     if (!isPasswordValid) {
       throw new UnauthorizedException('Credenciais inválidas');
     }
-    const payload = { sub: user.id, username: user.nome };
+    const payload = {
+      username: user.nome,
+      role: user.role,
+      healthProfessionalRole: user.healthProfessionalRole,
+    };
     return {
       access_token: await this.jwtService.signAsync(payload),
     };

@@ -35,4 +35,11 @@ export class GetUserDto {
     required: true,
   })
   readonly role: string;
+
+  @ApiProperty({
+    type: String,
+    description: 'Role do profissional de saúde',
+    required: false,
+  })
+  readonly healthProfessionalRole?: string;
 }
