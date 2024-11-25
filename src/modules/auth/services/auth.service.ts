@@ -19,8 +19,9 @@ export class AuthService {
     }
     const payload = {
       username: user.nome,
-      role: user.role,
-      healthProfessionalRole: user.healthProfessionalRole,
+      role: user.healthProfessionalRole
+        ? user.healthProfessionalRole
+        : user.role,
     };
     return {
       access_token: await this.jwtService.signAsync(payload),

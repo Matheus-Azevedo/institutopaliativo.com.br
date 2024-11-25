@@ -8,15 +8,19 @@ import {
   Delete,
   HttpStatus,
   HttpCode,
+  UseGuards,
 } from '@nestjs/common';
 import { UsersService } from '../services/users.service';
 import { CreateUserDto } from '../dto/create-user.dto';
 import { UpdateUserDto } from '../dto/update-user.dto';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { GetUserDto } from '../dto/get-user.dto';
+import { RolesGuard } from 'src/infra/security/roles.guard';
+import { Roles } from 'src/infra/security/roles.decorator';
 
 @ApiTags('users')
 @Controller('users')
+@UseGuards(RolesGuard)
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
@@ -40,6 +44,7 @@ export class UsersController {
   })
   @Get()
   @HttpCode(HttpStatus.OK)
+  @Roles('ADMIN')
   findAll(): Promise<GetUserDto[]> {
     return this.usersService.findAll();
   }

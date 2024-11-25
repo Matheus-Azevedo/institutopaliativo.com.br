@@ -49,6 +49,7 @@ export class UsersService {
         nome: user.nome,
         email: user.email,
         role: user.role,
+        healthProfessionalRole: user.healthProfessionalRole,
       };
       return userWithoutPassword;
     });
